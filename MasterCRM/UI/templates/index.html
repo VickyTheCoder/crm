@@ -1,11 +1,142 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=\, initial-scale=1.0">
-    <title>Document</title>
+  <title>My Django App</title>
+  <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet">
+  <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 </head>
-<body>
-   <h1> Default Single Page Application</h1>
+<body class="bg-gray-100">
+
+<!-- ================= LOGIN PAGE ================= -->
+<div id="loginPage" class="flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+    <form id="loginForm">
+      <input type="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <input type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Login</button>
+    </form>
+    <p class="mt-4 text-center text-sm">
+      Don’t have an account?
+      <a href="#" id="goSignup" class="text-blue-500">Sign up</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= SIGNUP PAGE ================= -->
+<div id="signupPage" class="flex items-center justify-center min-h-screen hidden">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+    <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" placeholder="Full Name" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <input type="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <input type="password" placeholder="Password" class="w-full px-4 py-2 border rounded-lg mb-4">
+      <button type="submit" class="w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Sign Up</button>
+    </form>
+    <p class="mt-4 text-center text-sm">
+      Already have an account?
+      <a href="#" id="goLogin" class="text-blue-500">Login</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD PAGE ================= -->
+<div id="dashboardPage" class="hidden min-h-screen flex">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white shadow-lg hidden md:block">
+    <div class="p-6 border-b">
+      <h2 class="text-xl font-bold">My App</h2>
+    </div>
+    <nav class="p-4 space-y-2">
+      <button class="nav-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-page="home">🏠 Dashboard</button>
+      <button class="nav-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-page="categories">📂 Categories</button>
+      <button class="nav-btn w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100" data-page="settings">⚙️ Settings</button>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-h-screen bg-gray-50">
+    <!-- Navbar -->
+    <header class="flex justify-between items-center bg-white shadow px-6 py-3 w-full">
+      <h1 class="text-lg font-semibold" id="pageTitle">Dashboard</h1>
+      <div class="flex items-center space-x-4">
+        <span class="font-medium">Demo User</span>
+        <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full border" alt="User">
+        <button id="logoutBtn" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Logout</button>
+      </div>
+    </header>
+
+    <!-- Pages -->
+    <main class="flex-1 p-6 space-y-6">
+      <div id="homePage" class="page">
+        <h2 class="text-xl font-bold mb-4">Welcome 🎉</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-6 bg-blue-100 rounded-lg shadow">📊 Analytics</div>
+          <div class="p-6 bg-green-100 rounded-lg shadow">📝 Reports</div>
+          <div class="p-6 bg-yellow-100 rounded-lg shadow">💼 Projects</div>
+        </div>
+      </div>
+
+      <div id="categoriesPage" class="page hidden">
+        <h2 class="text-xl font-bold">📂 Categories</h2>
+        <p>Here are your categories...</p>
+      </div>
+
+      <div id="settingsPage" class="page hidden">
+        <h2 class="text-xl font-bold">⚙️ Settings</h2>
+        <p>Adjust your settings here...</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+$(document).ready(function () {
+  // Switch Login → Signup
+  $("#goSignup").click(function (e) {
+    e.preventDefault();
+    $("#loginPage").hide();
+    $("#signupPage").show();
+  });
+
+  // Switch Signup → Login
+  $("#goLogin").click(function (e) {
+    e.preventDefault();
+    $("#signupPage").hide();
+    $("#loginPage").show();
+  });
+
+  // Login Form → Dashboard
+  $("#loginForm").submit(function (e) {
+    e.preventDefault();
+    $("#loginPage").hide();
+    $("#dashboardPage").show();
+  });
+
+  // Signup Form → Dashboard
+  $("#signupForm").submit(function (e) {
+    e.preventDefault();
+    $("#signupPage").hide();
+    $("#dashboardPage").show();
+  });
+
+  // Logout → Back to Login
+  $("#logoutBtn").click(function () {
+    $("#dashboardPage").hide();
+    $("#loginPage").show();
+  });
+
+  // Sidebar Nav
+  $(".nav-btn").click(function () {
+    let page = $(this).data("page");
+    $(".page").hide();
+    $("#" + page + "Page").show();
+    $("#pageTitle").text($(this).text().trim());
+  });
+});
+</script>
+
 </body>
 </html>
